@@ -19,56 +19,56 @@ connection.connect(function(err){
 
 function start() {
     inquirer
-        .prompt([
-            {
-                type: "list",
-                name: "start",
-                message: "What would you like to do?",
-                choices: ["View", "Create", "Update", "Exit"]
-            }
-        ]).then(function(res){
-            switch(res.start){
-                case "View":
-                    view();
-                    break;
-                case "Create":
-                    create();
-                    break;
-                case "Update":
-                    update();
-                    break;
-                case "Exit":
-                    console.log("You are all done")
-                    break;
-                default:
-                    console.log("dafault");
-            }
-        });
+    .prompt([
+        {
+            type: "list",
+            name: "start",
+            message: "What would you like to do?",
+            choices: ["View", "Create", "Update", "Exit"]
+        }
+    ]).then(function(res){
+        switch(res.start){
+            case "View":
+            view();
+            break;
+            case "Create":
+            create();
+            break;
+            case "Update":
+            update();
+            break;
+            case "Exit":
+            console.log("You are all done")
+            break;
+            default:
+            console.log("dafault");
+        }
+    });
 };
 function view() {
     inquirer
-        .prompt([
-            {
-                type: "list",
-                name: "view",
-                message: "Select one to view",
-                choices: ["All Employees", "Employees By Role", "Employees By Department"]
-            }
-        ]).then(function(res){
-            switch(res.view){
-                case "All Employees":
-                    viewAllEmployees();
-                    break;
-                case "Employees By Role":
-                    viewByRole();
-                    break;
-                case "Employees By Department":
-                    viewByDepartment();
-                    break;
-                default:
-                    console.log("default");
-            }
-        });
+    .prompt([
+        {
+            type: "list",
+            name: "view",
+            message: "Select one to view",
+            choices: ["All Employees", "Employees By Role", "Employees By Department"]
+        }
+    ]).then(function(res){
+        switch(res.view){
+            case "All Employees":
+            viewAllEmployees();
+            break;
+            case "Employees By Role":
+            viewByRole();
+            break;
+            case "Employees By Department":
+            viewByDepartment();
+            break;
+            default:
+            console.log("default");
+        }
+    });
 };
 
 function viewAllEmployees() {
@@ -83,29 +83,28 @@ function viewByRole() {
     connection.query("select * from roles", function(err, results){
         if (err) throw err;
         inquirer
-            .prompt([
-                {
-                    type: "rawlist",
-                    name: "choice",
-                    choices: function(){
-                        let choiceArray = [];
-                        for(i=0; i< results.length; i++){
-                            choiceArray.push({
-                                value: results[i].id,
-                                name: results[i].title   
-                            });
-                        }
-                        return choiceArray;
-                    },
-                    message: "Select which Role you want to view."
-                }
-            ]).then(function(answer){
-                connection.query("select * from employees inner join roles on employees.role_id = roles.id inner join departments on roles.department_id = departments.id where roles.title = ?", [answer.choice], function (err, results){
-                    if (err) throw err;
-                    console.table(results);
-                    start();
-                });
-            })
+        .prompt([
+            {
+                type: "rawlist",
+                name: "choice",
+                choices: function(){
+                    let choiceArray = [];
+                    for(i=0; i< results.length; i++){
+                        choiceArray.push(results[i].title);
+                    }
+                    console.log(choiceArray);
+                    return choiceArray;
+                },
+                message: "Select which Role you want to view."
+            }
+        ]).then(function(answer){
+            console.log(answer);
+            connection.query("select * from employees inner join roles on employees.role_id = roles.id inner join departments on roles.department_id = departments.id where roles.title = ?", [answer.choice], function (err, results){
+                if (err) throw err;
+                console.table(results);
+                start();
+            });
+        })
     })
 }
 
@@ -113,53 +112,54 @@ function viewByDepartment() {
     connection.query("select * from departments", function (err, results) {
         if (err) throw err;
         inquirer
-            .prompt([
-                {
-                    type: "rawlist",
-                    name: "choice",
-                    choices() {
-                        let choiceArray = [];
+        .prompt([
+            {
+                type: "rawlist",
+                name: "choice",
+                choices() {
+                    let choiceArray = [];
                     for(i=0; i< results.length; i++){
                         choiceArray.push(results[i].name);
                     }
                     return choiceArray;
                 },
                 message: "Select which Department you want to view."
-                }
-            ]).then(function(answer){
-                connection.query("select * from employees inner join roles on employees.role_id = roles.id inner join departments on roles.department_id = departments.id where departments.name = ?", [answer.choice], function (err, results){
-                    if (err) throw err;
-                    console.table(results);
-                    start();
-                });
-            })
+            }
+        ]).then(function(answer){
+            console.log(answer);
+            connection.query("select * from employees inner join roles on employees.role_id = roles.id inner join departments on roles.department_id = departments.id where departments.name = ?", [answer.choice], function (err, results){
+                if (err) throw err;
+                console.table(results);
+                start();
+            });
+        })
     })
 }
 
 function create() {
     inquirer
-        .prompt([
-            {
-                type: "list",
-                name: "create",
-                message: "What would you like to add?",
-                choices: ["Employee", "Role", "Department"]
-            }
-        ]).then(function(res){
-            switch(res.create){
-                case "Employee":
-                    addEmployee();
-                    break;
-                case "Role":
-                    addRole();
-                    break;
-                case "Department":
-                    addDepartment();
-                    break;
-                default:
-                    console.log("default");
-            }
-        })
+    .prompt([
+        {
+            type: "list",
+            name: "create",
+            message: "What would you like to add?",
+            choices: ["Employee", "Role", "Department"]
+        }
+    ]).then(function(res){
+        switch(res.create){
+            case "Employee":
+            addEmployee();
+            break;
+            case "Role":
+            addRole();
+            break;
+            case "Department":
+            addDepartment();
+            break;
+            default:
+            console.log("default");
+        }
+    })
 }
 
 function addDepartment(){
@@ -181,52 +181,52 @@ function addDepartment(){
 
 function addRole(){
     inquirer
-        .prompt([
-            {
-                type: "input",
-                name: "role",
-                message: "What is the name of the Role?"
-            },
-            {
-                type: "number",
-                name: "salary",
-                message: "Enter the Salary",
-                validate: function(value){
-                    if(isNaN(value)===false){
-                        return true;
-                    }
-                    return false;
+    .prompt([
+        {
+            type: "input",
+            name: "role",
+            message: "What is the name of the Role?"
+        },
+        {
+            type: "number",
+            name: "salary",
+            message: "Enter the Salary",
+            validate: function(value){
+                if(isNaN(value)===false){
+                    return true;
                 }
-            },
-            {
-                type: "number",
-                name: "department_id",
-                message: "Enter Department Id",
-                validate: function(value){
-                    if(isNaN(value)===false){
-                        return true;
-                    }
-                    return false;
-                }
+                return false;
             }
-        ]).then(function(answer){
-            connection.query("insert into roles set ?",{
-                title: answer.role,
-                salary: answer.salary,
-                department_id: answer.department_id
-            }, 
-            function(err){
-                if (err) throw err;
-                console.log("Roles updated with " + answer.role + ' ' + answer.salary +' and ' + answer.department_id + ".");
-                start();
-            })
-        });
+        },
+        {
+            type: "number",
+            name: "department_id",
+            message: "Enter Department Id",
+            validate: function(value){
+                if(isNaN(value)===false){
+                    return true;
+                }
+                return false;
+            }
+        }
+    ]).then(function(answer){
+        connection.query("insert into roles set ?",{
+            title: answer.role,
+            salary: answer.salary,
+            department_id: answer.department_id
+        }, 
+        function(err){
+            if (err) throw err;
+            console.log("Roles updated with " + answer.role + ' ' + answer.salary +' and ' + answer.department_id + ".");
+            start();
+        })
+    });
 }
 
 function addEmployee(){
     connection.query("select * from roles", function(err, results) {
         if (err) throw err;
-    inquirer
+        inquirer
         .prompt([
             {
                 type: "input",
@@ -281,133 +281,139 @@ function addEmployee(){
 
 function update(){
     inquirer
-        .prompt([
-            {
-                type: "list",
-                name: "update",
-                message: "What would you like to update?",
-                choices: ["Employee", "Department", "Role"]
-            }
-        ]).then(function(res){
-            switch(res.update){
-                case "Employee":
-                    updateEmployee();
-                    break;
-                case "Role":
-                    updateRole();
-                    break;
-                case "Department":
-                    updateDepartment();
-                    break;
-                default:
-                    console.log("default");
-            }
-        })
+    .prompt([
+        {
+            type: "list",
+            name: "update",
+            message: "What would you like to update?",
+            choices: ["Employee", "Department", "Role"]
+        }
+    ]).then(function(res){
+        switch(res.update){
+            case "Employee":
+            updateEmployee();
+            break;
+            case "Role":
+            updateRole();
+            break;
+            case "Department":
+            updateDepartment();
+            break;
+            default:
+            console.log("default");
+        }
+    })
 }
 
 function updateEmployee(){
-    connection.query("select * from employees", function(err, results){
+    connection.query("select * from employees", function(err, employees){
+        if (err) throw err;
+        connection.query("select * from roles", function (err, roles){
         if (err) throw err;
         inquirer
-            .prompt([
-                {
-                    type: "rawlist",
-                    name: "choice",
-                    choices: function(){
-                        choiceArray = [];
-                        for(i=0; i< results.length; i++){
-                            choiceArray.push(results[i].last_name);
-                        }
-                        return choiceArray;
-                    },
-                    message: "Select the Last Name of the employee to update."
+        .prompt([
+            {
+                type: "rawlist",
+                name: "choice",
+                choices: function(){
+                    choiceArray = [];
+                    for(i=0; i< employees.length; i++){
+                        choiceArray.push(employees[i].last_name);
+                    }
+                    return choiceArray;
                 },
-                {
-                    type: "input",
-                    name: "first_name",
-                    message: "Enter the employee's First Name."
+                message: "Select the Last Name of the employee to update."
+            },
+            {
+                type: "input",
+                name: "first_name",
+                message: "Enter the employee's First Name."
+            },
+            {
+                type: "input",
+                name: "last_name",
+                message: "Enter the employee's Last Name."
+            },
+            {
+                type: "rawlist",
+                name: "role",
+                choices: function(){
+                    console.log(roles);
+                    let choiceArray = [];
+                    for(i=0; i<roles.length; i++){
+                        choiceArray.push({
+                            value: roles[i].id,
+                            name: roles[i].title   
+                        });
+                    };
+                    console.log(choiceArray);
+                    return choiceArray;
                 },
-                {
-                    type: "input",
-                    name: "last_name",
-                    message: "Enter the employee's Last Name."
+                message: "Select Role"
+            },
+            {
+                type: "number",
+                name: "manager",
+                validate: function(value){
+                    if (isNaN(value)===false){
+                        return true;
+                    }
+                    return false;
                 },
+                message: "Enter Manager Id.",
+                default: "1"
+            }
+        ]).then(function(answer){
+            const updatedName = answer.choice;
+            connection.query("update employees set ? where last_name = ?", 
+            [
                 {
-                    type: "rawlist",
-                    name: "role",
-                    choices: function(){
-                        let choiceArray = [];
-                        for(i=0; i<results.length; i++){
-                            choiceArray.push({
-                                value: results[i].id,
-                                name: results[i].title   
-                            })
-                        }
-                        return choiceArray;
-                    },
-                    message: "Select Role"
-                },
-                {
-                    type: "number",
-                    name: "manager",
-                    validate: function(value){
-                        if (isNaN(value)===false){
-                            return true;
-                        }
-                        return false;
-                    },
-                    message: "Enter Manager Id.",
-                    default: "1"
-                }
-            ]).then(function(answer){
-                const updatedName = answer.choice;
-                connection.query("update employees set ? where last_name = ?", 
-                            [
-                                {
-                                    first_name: answer.first_name,
-                                    last_name: answer.last_name,
-                                    role: answer.role,
-                                    manager: answer.manager
-                                }, updatedName
-                            ],)
-                }),
+                    first_name: answer.first_name,
+                    last_name: answer.last_name,
+                    role_id: answer.role,
+                    manager_id: answer.manager
+                },  updatedName
+            ],)
                 console.log("Updated Employee");
                 start();
-    });
+        })
+    })
+})
 }
-
-
-
 
 function updateRole(){
     connection.query("select * from roles", function(err, results){
         if (err) throw err;
         inquirer
-            .prompt([
-                {
-                    type: "rawlist",
-                    name: "choice",
-                    choices: function(){
-                        choiceArray = [];
-                        for(i=0; i< results.length; i++){
-                            choiceArray.push({
-                                    value: results[i].id,
-                                    name: results[i].title
-                                });
-                        }
-                    },
-                    message: "Select the Role to update."
-                }
-            ]).then(function(answer){
-                const updatedRole = answer.choice;
-                connection.query("update roles set ? where id = ?", [{
-                    role_id: answer.id,
-                    title: answer.title
-                }, updatedRole
-            ]),
-                console.log("Role Updated");
+        .prompt([
+            {
+                type: "rawlist",
+                name: "choice",
+                choices: function(){
+                    choiceArray = [];
+                    for(i=0; i< results.length; i++){
+                        choiceArray.push({
+                            value: results[i].id,
+                            name: results[i].title
+                        });
+                    }
+                    return choiceArray;
+                },
+                message: "Select the Role to update."
+            },
+            {
+                type: "input",
+                name: "role",
+                message: "Enter the name of the role"
+            }
+        ]).then(function(answer){
+            const updatedRole = answer.choice;
+            connection.query("update roles set title = ? where id = ?", [answer.role, updatedRole], function(err, results){
+                if (err) throw err;
+                console.log("Roles updated with " + answer.role);
                 start();
-            })
+            })        
+        })
     })
 }
 
@@ -415,25 +421,36 @@ function updateDepartment(){
     connection.query("select * from departments", function(err, results){
         if (err) throw err;
         inquirer
-            .prompt([
-                {
-                    type: "rawlist",
-                    name: "choice",
-                    choices: function(){
-                        let choiceArray = [];
-                        for(i=0; i<results.length; i++){
-                            choiceArray.push({
-                                value: results[i].id,
-                                name: results[i].department
-                            });
-                        }
-                    },
-                    message: "Select the Department to update."
-                }
-            ]).then(function(answer){
-                connection.query("update departments set ? where id = ?", [{
-                    department_id: answer.id,
-                }])
+        .prompt([
+            {
+                type: "rawlist",
+                name: "choice",
+                choices: function(){
+                    console.log(results);
+                    let choiceArray = [];
+                    for(i=0; i<results.length; i++){
+                        choiceArray.push({
+                            value: results[i].id,
+                            name: results[i].name
+                        });
+                    }
+                    return choiceArray;
+                },
+                message: "Select the Department to update."
+            },
+            {
+                type: "input",
+                name: "department",
+                message: "Enter the name of the Department"
+            }
+        ]).then(function(answer){
+            const updatedDepartment = answer.choice;
+            //console,log(answer);
+            connection.query("update departments set name = ? where id = ?", [answer.department, updatedDepartment], function(err) {
+                if (err) throw err;
+                console.log("Departments updated with " + answer.department);
+                start();
             })
+        })
     })
 }

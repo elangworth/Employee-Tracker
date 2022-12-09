@@ -19,6 +19,7 @@ CREATE table roles(
     foreign key(department_id) 
         references departments(id)
         on delete cascade
+        on update cascade
 );
 
 CREATE table employees(
@@ -31,4 +32,5 @@ CREATE table employees(
     foreign key(role_id) 
         references roles(id)
         on delete cascade
+        on update cascade
 );

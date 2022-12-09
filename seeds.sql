@@ -14,13 +14,13 @@ insert into roles
     (title, salary, department_id)
 values
     ("Captain", 3000000, 1),
-    ("Commander", 225000, 1),
-    ("Commander", 225000, 4),
+    ("Commander Bridge", 225000, 1),
+    ("Commander Engineering", 225000, 4),
     ("Lieutenant", 200000, 2),
     ("Doctor", 275000, 3),
-    ("Ensign", 65000, 4),
-    ("Ensign", 65000, 3),
-    ("Ensign", 65000, 1);
+    ("Ensign Engineering", 65000, 4),
+    ("Ensign Medical", 65000, 3),
+    ("Ensign Bridge", 65000, 1);
 
 -- employee table
 
