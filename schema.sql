@@ -28,9 +28,6 @@ CREATE table employees(
     last_name varchar(30) not null,
     role_id int not null,
     manager_id int,
-    foreign key(employee_id)
-        references employees(id)
-        on update cascade
     primary key(id),
     foreign key(role_id) 
         references roles(id)
